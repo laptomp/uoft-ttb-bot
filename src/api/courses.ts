@@ -1,3 +1,4 @@
+import axios, { AxiosError } from "axios";
 import { Course } from "../types/course";
 import { SearchedCourse } from "../types/searched-course";
 import { tearsClient } from "./client";
@@ -21,20 +22,37 @@ export async function getCourse(courseCode: string): Promise<Course> {
 		throw new Error(`Course with courseCode '${courseCode}' could not be found`);
 	})();
 
-	const courses = await tearsClient.post("/getPageableCourses", {
-		availableSpace: false,
-		courseCodeAndTitleProps: {
-			courseCode: searchedCourse.code,
-			courseSectionCode: searchedCourse.sectionCode,
-			courseTitle: searchedCourse.name,
-			searchCourseDescription: false,
-		},
-		departmentProps: [],
-		divisions: ["ARTSC"],
-		page: 1,
-		pageSize: 20,
-		sessions: ["20269", "20271", "20269-20271"],
-	});
+	const courses = await tearsClient
+		.post("/getPageableCourses", {
+			availableSpace: false,
+			courseCodeAndTitleProps: {
+				courseCode: searchedCourse.code,
+				courseSectionCode: searchedCourse.sectionCode,
+				courseTitle: searchedCourse.name,
+				searchCourseDescription: false,
+			},
+			departmentProps: [],
+			divisions: ["ARTSC"],
+			page: 1,
+			pageSize: 20,
+			sessions: ["20269", "20271", "20269-20271"],
+		})
+		.catch((error: AxiosError) => {
+			if (error.response) {
+				// Server responded with status code outside the 200 category
+				console.log(`An error with code ${error.code}`);
+				console.log(error.toJSON());
+				throw error;
+			} else if (error.request) {
+				// Request was made but no request was received
+				console.log(`No response received with request: ${error.request}`);
+				throw error;
+			} else {
+				// Something else happened that triggered an Error
+				console.log(`An unknown error occurred: ${error.message}`)
+				throw error;
+			}
+		});
 
 	return courses.data.payload["pageableCourse"]["courses"][0] as Course;
 }
