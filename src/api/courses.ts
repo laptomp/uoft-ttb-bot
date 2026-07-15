@@ -49,7 +49,7 @@ export async function getCourse(courseCode: string): Promise<Course> {
 				throw error;
 			} else {
 				// Something else happened that triggered an Error
-				console.log(`An unknown error occurred: ${error.message}`)
+				console.log(`An unknown error occurred: ${error.message}`);
 				throw error;
 			}
 		});
@@ -70,15 +70,32 @@ export async function searchCourseByTerm(
 	sessions: Array<string>,
 	divisions: string = "ARTSC",
 ): Promise<Array<SearchedCourse>> {
-	const response = await tearsClient.get("/getOptimizedMatchingCourseTitles", {
-		params: {
-			term: term,
-			sessions: sessions,
-			divisions: divisions,
-			lowerThreshold: 50,
-			upperThreshold: 200,
-		},
-	});
+	const response = await tearsClient
+		.get("/getOptimizedMatchingCourseTitles", {
+			params: {
+				term: term,
+				sessions: sessions,
+				divisions: divisions,
+				lowerThreshold: 50,
+				upperThreshold: 200,
+			},
+		})
+		.catch((error: AxiosError) => {
+			if (error.response) {
+				// Server responded with status code outside the 200 category
+				console.log(`An error with code ${error.code}`);
+				console.log(error.toJSON());
+				throw error;
+			} else if (error.request) {
+				// Request was made but no request was received
+				console.log(`No response received with request: ${error.request}`);
+				throw error;
+			} else {
+				// Something else happened that triggered an Error
+				console.log(`An unknown error occurred: ${error.message}`);
+				throw error;
+			}
+		});
 
 	return response.data["payload"]["codesAndTitles"] as Array<SearchedCourse>;
 }
