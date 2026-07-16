@@ -23,8 +23,8 @@ export type CourseSection = {
 		repititionTime: string;
 	}>;
 	instructors: string[];
-	currentEnrollment: number;
-	maxEnrollment: number;
+	currentEnrolment: number;
+	maxEnrolment: number;
 	subTitle: string;
 	cancelInd: "Y" | "N";
 	waitlistInd: "Y" | "N";
