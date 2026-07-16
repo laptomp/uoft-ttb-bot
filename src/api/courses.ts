@@ -48,20 +48,7 @@ export async function getCourse(
 			sessions: ["20269", "20271", "20269-20271"],
 		})
 		.catch((error: AxiosError) => {
-			if (error.response) {
-				// Server responded with status code outside the 200 category
-				console.log(`An error with code ${error.code}`);
-				console.log(error.toJSON());
-				throw error;
-			} else if (error.request) {
-				// Request was made but no request was received
-				console.log(`No response received with request: ${error.request}`);
-				throw error;
-			} else {
-				// Something else happened that triggered an Error
-				console.log(`An unknown error occurred: ${error.message}`);
-				throw error;
-			}
+			handleTears(error);
 		});
 
 	return courses.data.payload["pageableCourse"]["courses"][0] as Course;
@@ -93,22 +80,24 @@ export async function searchCourseByTerm(
 				upperThreshold: 200,
 			},
 		})
-		.catch((error: AxiosError) => {
-			if (error.response) {
-				// Server responded with status code outside the 200 category
-				console.log(`An error with code ${error.code}`);
-				console.log(error.toJSON());
-				throw error;
-			} else if (error.request) {
-				// Request was made but no request was received
-				console.log(`No response received with request: ${error.request}`);
-				throw error;
-			} else {
-				// Something else happened that triggered an Error
-				console.log(`An unknown error occurred: ${error.message}`);
-				throw error;
-			}
-		});
+		.catch(handleTears);
 
 	return response.data["payload"]["codesAndTitles"] as Array<SearchedCourse>;
+}
+
+function handleTears(error: AxiosError): never {
+	if (error.response) {
+		// Server responded with status code outside the 200 category
+		console.log(`An error with code ${error.code}`);
+		console.log(error.toJSON());
+		throw error;
+	} else if (error.request) {
+		// Request was made but no request was received
+		console.log(`No response received with request: ${error.request}`);
+		throw error;
+	} else {
+		// Something else happened that triggered an Error
+		console.log(`An unknown error occurred: ${error.message}`);
+		throw error;
+	}
 }
