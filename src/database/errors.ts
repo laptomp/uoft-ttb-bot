@@ -13,3 +13,10 @@ export class CourseNotFoundError extends Error {
 		this.name = "CourseAlreadyExistsError";
 	}
 }
+
+export class InvalidSectionNameError extends Error {
+	constructor(sectionName: string) {
+		super(`Invalid section name provided: ${sectionName}`);
+		this.name = "InvalidSectionNameError";
+	}
+}
