@@ -15,7 +15,7 @@ import { Course, CourseSection } from "../../types";
 import { isExistingSection } from "../../utils";
 import { getCancelButton } from "../components/buttons";
 import { WatchDatabase } from "../../database/watch-database";
-import { getCourseSectionEmbed } from "../components/embeds";
+import { getCourseSectionEmbed, timedOutEmbed } from "../components/embeds";
 
 module.exports = {
 	command: new SlashCommandBuilder()
@@ -104,12 +104,11 @@ module.exports = {
 			});
 		};
 
-		const confirmation = await response.awaitMessageComponent({
-			filter: collectorFilter,
-			time: 60000,
-		});
-
 		try {
+			const confirmation = await response.awaitMessageComponent({
+				filter: collectorFilter,
+				time: 60000,
+			});
 			if (["dm", "channel"].includes(confirmation.customId)) {
 				debugger;
 				const alertChannelId =
@@ -142,7 +141,7 @@ module.exports = {
 			}
 		} catch (error) {
 			await cancelEmbedResponse();
-			await confirmation.update();
+			await userCommand.followUp({ embeds: [timedOutEmbed()] });
 		}
 	},
 };

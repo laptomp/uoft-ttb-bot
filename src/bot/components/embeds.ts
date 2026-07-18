@@ -105,3 +105,9 @@ export function getCourseSectionEmbed(course: Course, section: CourseSection): E
 		.setDescription(descriptionContent)
 		.addFields({ name: fieldName, value: fieldContent });
 }
+
+export function timedOutEmbed() {
+	return new EmbedBuilder()
+		.setTitle("Response timed out (user did not respond for 1 minute)")
+		.setColor("DarkRed");
+}
