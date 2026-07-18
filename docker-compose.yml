@@ -1,0 +1,7 @@
+services:
+    client:
+        build: .
+        container_name: uoft-ttb-bot
+        restart: unless-stopped
+        env_file:
+            - .env
