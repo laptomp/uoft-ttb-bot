@@ -4,8 +4,7 @@ import {
 	Client,
 	DiscordAPIError,
 	EmbedBuilder,
-	Events,
-	TextChannel,
+	Events
 } from "discord.js";
 import { getCourse } from "../../api";
 import { CourseDatabase } from "../../database";
