@@ -4,7 +4,7 @@
 	"description": "A rough API wrapper for the University of Toronto's Timetable Builder.",
 	"main": "index.js",
 	"scripts": {
-		"build": "tsc",
+		"build": "tsc && mkdir -p build/bot/assets && cp -r src/bot/assets/. build/bot/assets",
 		"postinstall": "tsc; node -e \"try{require('sqlite3')}catch(e){if(e.message.includes('GLIBC'))require('child_process').execSync('npm rebuild sqlite3 --build-from-source');else throw e}\""
 	},
 	"keywords": [],

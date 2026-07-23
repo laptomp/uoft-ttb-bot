@@ -1,6 +1,7 @@
 import { AttachmentBuilder, EmbedBuilder } from "discord.js";
 import { Course, CourseSection } from "../../api";
 import { sortSections } from "../../utils";
+import path from "path";
 
 export async function getCourseSectionsEmbed(
 	course: Course,
@@ -75,7 +76,8 @@ export async function getCourseSectionsEmbed(
 			return field;
 		});
 
-	const image = new AttachmentBuilder("./src/bot/assets/UofTlogo.png", {
+	const imagePath = path.join(__dirname, "../assets/UofTlogo.png");
+	const image = new AttachmentBuilder(imagePath, {
 		name: "jpg.jpg", // will be sent as jpg.jpg
 	});
 
