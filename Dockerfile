@@ -17,5 +17,6 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 COPY --from=build /app/build ./build
+COPY assets ./assets
 
 CMD ["node", "build/index.js"]

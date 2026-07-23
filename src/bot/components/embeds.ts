@@ -76,7 +76,7 @@ export async function getCourseSectionsEmbed(
 			return field;
 		});
 
-	const imagePath = path.join(__dirname, "../assets/UofTlogo.png");
+	const imagePath = path.join(__dirname, "../../../assets/UofTlogo.png");
 	const image = new AttachmentBuilder(imagePath, {
 		name: "jpg.jpg", // will be sent as jpg.jpg
 	});
