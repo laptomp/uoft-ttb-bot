@@ -34,7 +34,7 @@ tearsClient.interceptors.response.use(
 		// if (config._retryCount++ === 3) return Promise.reject(error);
 
 		// Exponential backoff
-		const backoff = config._retryCount < 5 ? 200 * 2 ** config._retryCount : 6400;
+		const backoff = ++config._retryCount < 5 ? 200 * 2 ** config._retryCount : 6400;
 		if (!isRateLimited)
 			console.log(`Internal server error detected. Retrying request in ${backoff}ms...`);
 		else console.log(`Ratelimiting detected. Retrying request in ${backoff}ms...`);
