@@ -45,7 +45,7 @@ module.exports = {
 		]).catch(async (error) => {
 			if (error instanceof Error && error.message.includes("not be found")) {
 				await userCommand.editReply(
-					`I could not find a course with the code ${givenCourseCode.toUpperCase()}.`,
+					`⚠️ I could not find a course with the code \`${givenCourseCode.toUpperCase()}\`.`,
 				);
 			}
 		});
