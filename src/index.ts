@@ -1,4 +1,4 @@
-import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
+import { Client, Collection, GatewayIntentBits, Options, Partials, User } from "discord.js";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
@@ -40,6 +40,17 @@ const discordClient: Client = new Client({
 		GatewayIntentBits.MessageContent,
 	],
 	partials: [Partials.Channel],
+	sweepers: {
+		...Options.DefaultSweeperSettings,
+		messages: {
+			interval: 3600,
+			lifetime: 1800,
+		},
+		users: {
+			interval: 1800,
+			filter: () => (user: User) => user.bot && user.id !== user.client.user.id,
+		},
+	},
 });
 
 discordClient.commands = new Collection();
