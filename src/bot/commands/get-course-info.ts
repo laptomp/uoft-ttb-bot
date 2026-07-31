@@ -20,11 +20,12 @@ module.exports = {
 				.setMinLength(6)
 				.setMaxLength(8)
 				.setRequired(true),
-		).setContexts([
-					InteractionContextType.Guild,
-					InteractionContextType.BotDM,
-					InteractionContextType.PrivateChannel,
-				]),
+		)
+		.setContexts([
+			InteractionContextType.Guild,
+			InteractionContextType.BotDM,
+			InteractionContextType.PrivateChannel,
+		]),
 	async execute(userCommand: ChatInputCommandInteraction) {
 		const givenCourseCode = userCommand.options.getString("code");
 
@@ -37,11 +38,19 @@ module.exports = {
 
 		await userCommand.reply(descriptionContent);
 
-		const course: Course = await getCourse(givenCourseCode.toUpperCase(), [
+		const course: Course | void = await getCourse(givenCourseCode.toUpperCase(), [
 			"ARTSC",
 			"SCAR",
 			"ERIN",
-		]);
+		]).catch(async (error) => {
+			if (error instanceof Error && error.message.includes("not be found")) {
+				await userCommand.editReply(
+					`I could not find a course with the code ${givenCourseCode.toUpperCase()}.`,
+				);
+			}
+		});
+
+		if (!course) return;
 
 		const replyContent: [EmbedBuilder, AttachmentBuilder] =
 			await getCourseSectionsEmbed(course);

@@ -1,6 +1,8 @@
 import {
 	ActionRowBuilder,
 	ChatInputCommandInteraction,
+	DiscordjsError,
+	DiscordjsErrorCodes,
 	EmbedBuilder,
 	Interaction,
 	InteractionContextType,
@@ -40,11 +42,19 @@ module.exports = {
 			return;
 		}
 
-		const course: Course = await getCourse(givenCourseCode.toUpperCase(), [
+		const course: Course | void = await getCourse(givenCourseCode.toUpperCase(), [
 			"ARTSC",
 			"SCAR",
 			"ERIN",
-		]);
+		]).catch(async (error) => {
+			if (error instanceof Error && error.message.includes("not be found")) {
+				await userCommand.editReply(
+					`I could not find a course with the code ${givenCourseCode.toUpperCase()}.`,
+				);
+			}
+		});
+
+		if (!course) return;
 
 		const sectionsCount = course.sections.reduce(
 			(count: Record<string, number>, section: CourseSection) => {
@@ -112,7 +122,14 @@ module.exports = {
 				await cancelEmbedResponse();
 				await confirmation.update();
 			}
-		} catch {
+		} catch (error) {
+			if (
+				!(error instanceof DiscordjsError) ||
+				(error instanceof DiscordjsError &&
+					error.code !== DiscordjsErrorCodes.InteractionCollectorError)
+			) {
+				throw error;
+			}
 			await cancelEmbedResponse();
 			await userCommand.followUp({ embeds: [timedOutEmbed()] });
 		}

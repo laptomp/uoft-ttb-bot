@@ -35,22 +35,31 @@ module.exports = {
 				.setMinLength(4)
 				.setMaxLength(7)
 				.setRequired(true),
-		).setContexts([
-					InteractionContextType.Guild,
-					InteractionContextType.BotDM,
-					InteractionContextType.PrivateChannel,
-				]),
+		)
+		.setContexts([
+			InteractionContextType.Guild,
+			InteractionContextType.BotDM,
+			InteractionContextType.PrivateChannel,
+		]),
 	async execute(userCommand: ChatInputCommandInteraction) {
 		const response = await userCommand.reply("Processing...");
 
 		const givenCourseCode = userCommand.options.getString("code")!;
 		const givenSectionCode = userCommand.options.getString("section")!.toUpperCase();
 
-		const course: Course = await getCourse(givenCourseCode.toUpperCase(), [
+		const course: Course | void = await getCourse(givenCourseCode.toUpperCase(), [
 			"ARTSC",
 			"SCAR",
 			"ERIN",
-		]);
+		]).catch(async (error) => {
+			if (error instanceof Error && error.message.includes("not be found")) {
+				await userCommand.editReply(
+					`I could not find a course with the code ${givenCourseCode.toUpperCase()}.`,
+				);
+			}
+		});
+
+		if (!course) return;
 
 		if (!isExistingSection(course, givenSectionCode)) {
 			await userCommand.editReply(
