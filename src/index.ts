@@ -1,4 +1,12 @@
-import { Client, Collection, GatewayIntentBits, Options, Partials, User } from "discord.js";
+import {
+	Client,
+	Collection,
+	GatewayIntentBits,
+	GuildMember,
+	Options,
+	Partials,
+	User,
+} from "discord.js";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
@@ -40,6 +48,14 @@ const discordClient: Client = new Client({
 		GatewayIntentBits.MessageContent,
 	],
 	partials: [Partials.Channel],
+	makeCache: Options.cacheWithLimits({
+		...Options.DefaultMakeCacheSettings,
+		ReactionManager: 0,
+		GuildMemberManager: {
+			maxSize: 200,
+			keepOverLimit: (m: GuildMember) => m.id === m.client.user.id,
+		},
+	}),
 	sweepers: {
 		...Options.DefaultSweeperSettings,
 		messages: {

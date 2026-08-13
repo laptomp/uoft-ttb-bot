@@ -131,7 +131,7 @@ export class CourseDatabase {
 	 * @returns A promise of a `CourseEntry` representing the course.
 	 */
 	static async getCourseById(courseId: string): Promise<CourseEntry> {
-		if (!this.isRecorded(courseId)) {
+		if (!await this.isRecorded(courseId)) {
 			throw new CourseNotFoundError(courseId);
 		}
 		return (await CourseTable.findAll({ where: { id: courseId } }))[0].dataValues;
