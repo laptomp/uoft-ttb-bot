@@ -76,7 +76,7 @@ module.exports = {
 					channelWatches
 						.filter((watch: ChannelWatch) => watch.courseId === course.id)
 						.map(async (watch) => {
-							const channel = client.channels.cache.get(watch.channelId);
+							const channel = await client.channels.fetch(watch.channelId);
 							if (channel?.isTextBased()) {
 								const replyContent: [EmbedBuilder, AttachmentBuilder] =
 									await getCourseSectionsEmbed(course);
